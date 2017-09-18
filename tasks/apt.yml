@@ -15,6 +15,7 @@
     state: "{{ item.state | default('present') }}"
   when: item.key is defined
   with_items: '{{ packages_repos }}'
+  become: yes
 
 - name: apt | add/remove package repos
   apt_repository:
@@ -22,20 +23,24 @@
     state: "{{ item.state | default('present') }}"
     update_cache: yes
   with_items: '{{ packages_repos }}'
+  become: yes
 
 - name: apt | update cache
   apt:
     update_cache: yes
     cache_valid_time: "{{ packages_cache_valid_time | default(omit) }}"
+    become: yes
 
 - name: apt | remove packages
   apt:
     name: "{{ item }}"
     state: absent
   with_items: '{{ packages_remove }}'
+  become: yes
 
 - name: apt | add packages
   apt:
     name: "{{ item }}"
     state: present
   with_items: '{{ packages_add }}'
+  become: yes
